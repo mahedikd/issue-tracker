@@ -15,7 +15,7 @@ let app = express();
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
-
+app.use(cors({optionsSuccessStatus: 200}));
 
 
 app.use(bodyParser.json());
