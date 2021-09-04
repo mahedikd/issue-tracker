@@ -95,7 +95,7 @@ module.exports = function(app) {
 			if (Object.keys(updateObj).length < 2) {
 				return res.json({ error: 'no update field(s) sent', '_id': req.body._id })
 			}
-			// updateObj['updated_on'] = new Date()
+			updateObj['updated_on'] = new Date() 
 
 
 			const pdata = await Project.findOne({ name: project });
@@ -116,10 +116,8 @@ module.exports = function(app) {
 			// nestedData.status_text = status_text || nestedData.status_text;
 			// nestedData.open = open === 'false' ? false : true;
 			// nestedData.updated_on = new Date();
-			Object.keys(req.body).forEach(key => {
-				if (req.body[key] != "") {
+			Object.keys(updateObj).forEach(key => {
 					nestedData[key] = updateObj[key]
-				}
 			})
 
 
