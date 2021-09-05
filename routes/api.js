@@ -11,13 +11,14 @@ module.exports = function(app) {
 		.get(async function(req, res) {
 			let project = req.params.project;
 
-			let { assigned_to, open, created_by, issue_text, issue_title, status_text } = req.query;
+			let { _id,assigned_to, open, created_by, issue_text, issue_title, status_text } = req.query;
 			open = open === 'false' ? false : true;
 
 			const pdata = await Project.aggregate([
 				{ $match: { name: project } },
 				{ $unwind: '$issues' },
 				open != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
+				_id != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
 				assigned_to != undefined
 					? { $match: { 'issues.assigned_to': assigned_to } }
 					: { $match: {} },
@@ -73,15 +74,10 @@ module.exports = function(app) {
 		.put(async function(req, res) {
 			let project = req.params.project;
 
-			const { _id, issue_title, issue_text, created_by, assigned_to, status_text, open } =
-				req.body;
+			const _id = req.body._id;
 
 			if (!_id) {
 				res.json({ error: 'missing _id' });
-				return;
-			}
-			if (!/[a-fA-F0-9]{24}/.test(_id)) {
-				res.json({ error: 'invalid _id', '_id': _id });
 				return;
 			}
 
@@ -93,40 +89,27 @@ module.exports = function(app) {
 				}
 			})
 			if (Object.keys(updateObj).length < 2) {
-				return res.json({ error: 'no update field(s) sent', '_id': req.body._id })
+				return res.json({ error: 'no update field(s) sent', _id });
 			}
-			updateObj['updated_on'] = new Date() 
-
+			updateObj['updated_on'] = new Date();
 
 			const pdata = await Project.findOne({ name: project });
-			if (!pdata) {
-				res.json({ error: 'could not update', '_id': _id });
-				return;
-			}
+
 			const nestedData = await pdata.issues.id(_id);
 			if (!nestedData) {
-				res.json({ error: 'invalid _id', '_id': _id });
-				return;
+				return res.json({ error: 'could not update', _id });
 			}
 
-			// nestedData.issue_text = issue_text || nestedData.issue_text;
-			// nestedData.issue_title = issue_title || nestedData.issue_title;
-			// nestedData.created_by = created_by || nestedData.created_by;
-			// nestedData.assigned_to = assigned_to || nestedData.assigned_to;
-			// nestedData.status_text = status_text || nestedData.status_text;
-			// nestedData.open = open === 'false' ? false : true;
-			// nestedData.updated_on = new Date();
 			Object.keys(updateObj).forEach(key => {
-					nestedData[key] = updateObj[key]
+					nestedData[key] = updateObj[key];
 			})
-
 
 			pdata.save((err,data)=>{
 				if(err){
 					res.json({ error: 'could not update', _id });
 				}else{
-					res.json({ result: 'successfully updated', _id });
-				}
+					res.json({  result: 'successfully updated', '_id': _id });
+				}	
 			});
 
 		})
