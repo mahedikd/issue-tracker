@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { Issue, Project } = require('../DB/model');
 
 module.exports = function(app) {
-	require('../DB/dbconnect');
+
 	app
 		.route('/api/issues/:project')
 // ####################[ GET ]####################
@@ -17,7 +17,7 @@ module.exports = function(app) {
 			const pdata = await Project.aggregate([
 				{ $match: { name: project } },
 				{ $unwind: '$issues' },
-				_id != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
+				_id != undefined ? { $match: { 'issues._id': ObjectId(_id) } } : { $match: {} },
 				open != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
 				created_by != undefined ? { $match: { 'issues.created_by': created_by } } : { $match: {} },
 				assigned_to != undefined

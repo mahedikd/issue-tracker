@@ -16,6 +16,7 @@ app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
 // app.use(cors({optionsSuccessStatus: 200}));
+require('./DB/dbconnect');
 
 
 app.use(bodyParser.json());
