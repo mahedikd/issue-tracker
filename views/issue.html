@@ -7,26 +7,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/public/style.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
   </head>
   <body>
     <header>
       <h1 id='projectTitle'></h1>
     </header>
-    <center>
-      <div id='submitNewIssue'>
-        <br>
+    <center class='container-sm'>
         <h3>Submit a new issue:</h3>
-        <form id="newIssue" method="post" action="/api/">
-          <input type="text" name="issue_title" placeholder="*Title" style="width: 320px; margin-bottom: 3px;" required=''><br>
-          <textarea type="text" name="issue_text" placeholder="*Text" style="width: 320px; height: 100px;" required=''></textarea><br>
-          <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required=''>
-          <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px">
-          <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br>
-          <button type="submit">Submit Issue</button>
+      <div  class='row justify-content-md-center' id='submitNewIssue'>
+        <br>
+				<div class="col"></div>
+        <form class='col' id="newIssue" method="post" action="/api/">
+          <input class="form-control mb-2" type="text" name="issue_title" placeholder="*Title"  required=''><br>
+          <textarea class="form-control mb-2" type="text" name="issue_text" placeholder="*Text" required=''></textarea><br>
+          <input class="form-control mb-2" type="text" name="created_by" placeholder="*Created by"  required=''>
+          <input class="form-control mb-2" type="text" name="assigned_to" placeholder="(opt)Assigned to" >
+          <input class="form-control mb-2" type="text" name="status_text" placeholder="(opt)Status text" ><br>
+          <button class="btn btn-primary" type="submit">Submit Issue</button>
         </form>
+				<div class="col"></div>
       </div>
       
-      <div id='issueDisplay'></div>
+      <div class="d-flex justify-content-center align-items-center flex-column bd-highlight mb-3" id='issueDisplay'></div>
       
       <hr style='margin: 50px; margin-top: 200px'>
     </center>
