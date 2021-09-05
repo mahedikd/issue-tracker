@@ -7,22 +7,22 @@ module.exports = function(app) {
 	require('../DB/dbconnect');
 	app
 		.route('/api/issues/:project')
-
+// ####################[ GET ]####################
 		.get(async function(req, res) {
 			let project = req.params.project;
 
-			let { _id,assigned_to, open, created_by, issue_text, issue_title, status_text } = req.query;
+			let { _id, assigned_to, open, created_by, issue_text, issue_title, status_text } = req.query;
 			open = open === 'false' ? false : true;
 
 			const pdata = await Project.aggregate([
 				{ $match: { name: project } },
 				{ $unwind: '$issues' },
-				open != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
 				_id != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
+				open != undefined ? { $match: { 'issues.open': open } } : { $match: {} },
+				created_by != undefined ? { $match: { 'issues.created_by': created_by } } : { $match: {} },
 				assigned_to != undefined
 					? { $match: { 'issues.assigned_to': assigned_to } }
 					: { $match: {} },
-				created_by != undefined ? { $match: { 'issues.created_by': created_by } } : { $match: {} },
 				issue_title != undefined ? { $match: { 'issues.issue_title': issue_title } } : { $match: {} },
 				issue_text != undefined ? { $match: { 'issues.issue_text': issue_text } } : { $match: {} },
 				status_text != undefined ? { $match: { 'issues.status_text': status_text } } : { $match: {} },
@@ -34,7 +34,7 @@ module.exports = function(app) {
 			const mappedData = pdata.map((item) => item.issues);
 			res.json(mappedData);
 		})
-
+// ####################[ POST ]####################
 		.post(async function(req, res) {
 			let project = req.params.project;
 
@@ -70,7 +70,7 @@ module.exports = function(app) {
 			}
 			res.json(newIssue);
 		})
-
+// ####################[ PUT ]####################
 		.put(async function(req, res) {
 			let project = req.params.project;
 
@@ -101,19 +101,19 @@ module.exports = function(app) {
 			}
 
 			Object.keys(updateObj).forEach(key => {
-					nestedData[key] = updateObj[key];
+				nestedData[key] = updateObj[key];
 			})
 
-			pdata.save((err,data)=>{
-				if(err){
+			pdata.save((err, data) => {
+				if (err) {
 					res.json({ error: 'could not update', _id });
-				}else{
-					res.json({  result: 'successfully updated', '_id': _id });
-				}	
+				} else {
+					res.json({ result: 'successfully updated', '_id': _id });
+				}
 			});
 
 		})
-
+// ####################[ DELETE ]####################
 		.delete(async function(req, res) {
 			let project = req.params.project;
 
